@@ -18,16 +18,23 @@ public class TestController {
     private UserInfoDOMapper userInfoDOMapper;
 
     @GetMapping("/insert")
-    public String insertUserDO(@RequestParam("name") String name) {
+    public String insertUserDO(@RequestParam("name") String name, @RequestParam("phone") String phone) {
         UserInfoDO userInfoDO = new UserInfoDO();
         userInfoDO.setName(name);
-        userInfoDO.setPhone("123333333");
+        userInfoDO.setPhone(phone);
         userInfoDO.setIdNumber("22223333333");
         userInfoDO.setIsDelete(false);
         Date now = new Date();
         userInfoDO.setGmtCreateTime(now);
         userInfoDO.setGmtModTime(now);
         userInfoDOMapper.insert(userInfoDO);
+        return "成功";
+    }
+
+    @GetMapping("/update")
+    public String updateById(@RequestParam("id") Long id, @RequestParam("name") String name) {
+        String phone = "11111111111";
+        userInfoDOMapper.updateById(id, name, phone);
         return "成功";
     }
 
@@ -51,13 +58,6 @@ public class TestController {
         return userInfoDO;
     }
 
-
-    @GetMapping("/insertWithTypeHandler2")
-    public String insertWithTypeHandler2(@RequestParam("name") String name, @RequestParam("phone") String phone) {
-        EncryptItems encryptItems = new EncryptItems(phone, name);
-        userInfoDOMapper.insertWithTypeHandler2(encryptItems);
-        return "成功";
-    }
 
     @GetMapping("/get")
     public UserInfoDO getById(@RequestParam("id") Long id) {

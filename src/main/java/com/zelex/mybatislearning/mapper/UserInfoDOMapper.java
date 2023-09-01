@@ -1,7 +1,7 @@
 package com.zelex.mybatislearning.mapper;
 
+import com.zelex.mybatislearning.interceptor.anno.SensitiveField;
 import com.zelex.mybatislearning.po.UserInfoDO;
-import com.zelex.mybatislearning.typehandler.model.EncryptItems;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -14,12 +14,13 @@ public interface UserInfoDOMapper {
     UserInfoDO selectByIdWithDec(Long id);
 
 
-    void insertWithTypeHandler2(@Param("encs")EncryptItems encs);
 
 
 
     void insert(UserInfoDO userInfoDO);
 
     UserInfoDO selectById(Long id);
+
+    void updateById(Long id, String name, @Param("phone") @SensitiveField String phone);
 
 }
