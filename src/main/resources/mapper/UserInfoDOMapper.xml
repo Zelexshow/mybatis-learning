@@ -1,0 +1,67 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zelex.mybatislearning.mapper.UserInfoDOMapper">
+    <resultMap type="com.zelex.mybatislearning.po.UserInfoDO" id="userInfo">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="id_number" property="idNumber" jdbcType="VARCHAR"/>
+        <result column="is_delete" property="isDelete" jdbcType="VARCHAR"/>
+        <result column="gmt_create_time" property="gmtCreateTime" jdbcType="DATE"/>
+        <result column="gmt_mod_time" property="gmtModTime" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <resultMap type="com.zelex.mybatislearning.po.UserInfoDO" id="userInfoWithDec">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="phone" property="phone" jdbcType="VARCHAR" typeHandler="com.zelex.mybatislearning.typehandler.PhoneStringEncryptHandler"/>
+        <result column="id_number" property="idNumber" jdbcType="VARCHAR"/>
+        <result column="is_delete" property="isDelete" jdbcType="VARCHAR"/>
+        <result column="gmt_create_time" property="gmtCreateTime" jdbcType="DATE"/>
+        <result column="gmt_mod_time" property="gmtModTime" jdbcType="BOOLEAN"/>
+    </resultMap>
+
+    <sql id="allFields">
+        id, name, phone, id_number, is_delete, gmt_create_time, gmt_mod_time from t_user_info
+    </sql>
+
+    <select id="selectByIdWithDec" resultMap="userInfoWithDec">
+        select <include refid="allFields"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWithTypeHandler">
+        insert into t_user_info (
+        name, phone, is_delete, gmt_create_time, gmt_mod_time
+        )
+        values (
+        #{name}, #{phone,jdbcType=VARCHAR,typeHandler=com.zelex.mybatislearning.typehandler.PhoneStringEncryptHandler}, 0, NOW(), NOW()
+        )
+    </insert>
+
+
+    <insert id="insert">
+        insert into t_user_info (
+        name, phone, id_number, is_delete, gmt_create_time, gmt_mod_time
+        )
+        values (
+        #{name}, #{phone}, #{idNumber}, #{isDelete}, #{gmtCreateTime}, #{gmtModTime}
+        )
+    </insert>
+
+    <insert id="insertWithTypeHandler2">
+        insert into t_user_info (
+        name, phone, is_delete, gmt_create_time, gmt_mod_time
+        )
+        values (
+        #{encs.name}, #{encs.phone}, 0, NOW(), NOW()
+        )
+    </insert>
+
+    <select id="selectById" resultMap="userInfo">
+        select <include refid="allFields"/>
+        where id = #{id}
+    </select>
+</mapper>
