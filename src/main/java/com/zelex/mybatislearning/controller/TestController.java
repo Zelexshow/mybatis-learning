@@ -2,8 +2,6 @@ package com.zelex.mybatislearning.controller;
 
 import com.zelex.mybatislearning.mapper.UserInfoDOMapper;
 import com.zelex.mybatislearning.po.UserInfoDO;
-import com.zelex.mybatislearning.typehandler.model.EncryptItem;
-import com.zelex.mybatislearning.typehandler.model.EncryptItems;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,11 +1,10 @@
 package com.zelex.mybatislearning.typehandler;
 
-import com.zelex.mybatislearning.typehandler.model.EncryptItem;
+
 import com.zelex.mybatislearning.util.EnDecrUtil;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
-import java.nio.charset.StandardCharsets;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
