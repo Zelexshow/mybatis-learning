@@ -37,11 +37,11 @@ public class EncryptInterceptor implements Interceptor {
            return invocation.proceed();
         }
         // 判断并进行加密操作
-        encryptFiled(parameterHandler, parameterObject);
+        encryptField(parameterHandler, parameterObject);
         return invocation.proceed();
     }
 
-    private void encryptFiled(ParameterHandler parameterHandler, Object sourceObject) throws NoSuchFieldException, ClassNotFoundException {
+    private void encryptField(ParameterHandler parameterHandler, Object sourceObject) throws NoSuchFieldException, ClassNotFoundException {
         if (null == sourceObject) {
             return;
         }
@@ -50,24 +50,22 @@ public class EncryptInterceptor implements Interceptor {
             Map<String, Object> mapObj = (Map<String, Object>) sourceObject;
             //先把"param"开头的过滤掉
             for (Map.Entry<String, Object> entry : mapObj.entrySet()) {
-                String key = entry.getKey();
-                Object value = entry.getValue();
-                if (value instanceof String) {
-                    if (!key.startsWith("param") && Objects.nonNull(key)) {
+                if (entry.getValue() instanceof String) {
+                    if (!entry.getKey().startsWith("param") && Objects.nonNull(entry.getKey())) {
                         handleString(parameterHandler, entry);
                     }
                 } else {
                     // obj case 递归分支
-                    encryptFiled(parameterHandler, value);
+                    encryptField(parameterHandler, entry.getValue());
                 }
             }
             return;
         }
-
+        // 遍历递归处理
         if (sourceObject instanceof List) {
             List<Object> objList = (List<Object>) sourceObject;
             for (Object o : objList) {
-                encryptFiled(parameterHandler, o);
+                encryptField(parameterHandler, o);
             }
             return;
         }
@@ -76,7 +74,6 @@ public class EncryptInterceptor implements Interceptor {
         if (!SensitiveUtil.isSensitiveClass(clazz)) {
             return;
         }
-
         // object case
         try {
             // 获取满足加密注解条件的字段
@@ -92,7 +89,6 @@ public class EncryptInterceptor implements Interceptor {
     }
 
     private void handleString(ParameterHandler parameterHandler, Map.Entry<String, Object> entry) throws NoSuchFieldException, ClassNotFoundException {
-        String key = entry.getKey();
         Class<? extends ParameterHandler> aClass = parameterHandler.getClass();
         Field mappedStatement = aClass.getDeclaredField("mappedStatement");
         ReflectUtil.setAccessible(mappedStatement);
@@ -110,21 +106,26 @@ public class EncryptInterceptor implements Interceptor {
         if (!optionalMethod.isPresent()) {
             return;
         }
-
-        // TODO 需要根据Key和mappedStatement去判断是否要加密
         Method method = optionalMethod.get();
-        for (Parameter parameter : method.getParameters()) {
+        List<Parameter> needDecryptParameters = Arrays.stream(method.getParameters()).filter(parameter -> parameter.isAnnotationPresent(SensitiveField.class)).toList();
+        for (Parameter parameter : needDecryptParameters) {
             String name = parameter.getName();
-            // 更新操作且带加密注解，才进行更新
-            if (name.equals(key)
-                    && parameter.isAnnotationPresent(SensitiveField.class)
+            String nameToMatch = StringUtils.isEmpty(parameter.getAnnotation(SensitiveField.class).paramName())
+                    ? name : parameter.getAnnotation(SensitiveField.class).paramName();
+
+            // 遍历请求入参map，找到匹配的槽点key，进行匹配加密
+            String paramKey = entry.getKey();
+            if (StringUtils.equals(nameToMatch, paramKey)
                     && statement.getSqlCommandType().equals(SqlCommandType.UPDATE)) {
                 String originStr = (String) entry.getValue();
                 String encryptStr = EnDecrUtil.encrypt(originStr, null);
                 log.info("开始进行加密操作，加密字段：{}, 原始值:{}, 加密后的值:{}", name, originStr, encryptStr);
                 entry.setValue(encryptStr);
+                //一般时一一对应，所以匹配上了就可以跳出
+                break;
             }
         }
+
     }
 
     @Override

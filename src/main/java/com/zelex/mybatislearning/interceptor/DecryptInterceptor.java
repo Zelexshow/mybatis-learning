@@ -35,31 +35,17 @@ public class DecryptInterceptor implements Interceptor {
         decryptFiled(result);
         return result;
     }
-
-    @Override
-    public Object plugin(Object target) {
-        return Interceptor.super.plugin(target);
-    }
-
-    @Override
-    public void setProperties(Properties properties) {
-        Interceptor.super.setProperties(properties);
-    }
-
     private void decryptFiled(Object sourceObject) {
-
         if (null == sourceObject) {
             return;
         }
-        if (sourceObject instanceof Map) {
-            // TODO 目前只支持简单DO返回，所以不考虑Map实现
-        }
+        // TODO 目前只支持简单DO返回，所以不考虑Map实现
+        if (sourceObject instanceof Map) {}
         if (sourceObject instanceof List) {
             ((List<?>) sourceObject).stream().forEach(this::decryptFiled);
             return;
         }
         Class<?> clazz = sourceObject.getClass();
-
         if (!SensitiveUtil.isSensitiveClass(clazz)) {
             return;
         }
@@ -74,6 +60,14 @@ public class DecryptInterceptor implements Interceptor {
             }
         } catch (Exception e) {
         }
+    }
 
+    @Override
+    public Object plugin(Object target) {
+        return Interceptor.super.plugin(target);
+    }
+    @Override
+    public void setProperties(Properties properties) {
+        Interceptor.super.setProperties(properties);
     }
 }

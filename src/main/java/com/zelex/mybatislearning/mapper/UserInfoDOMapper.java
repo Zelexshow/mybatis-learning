@@ -21,6 +21,16 @@ public interface UserInfoDOMapper {
 
     UserInfoDO selectById(Long id);
 
-    void updateById(Long id, String name, @Param("phone") @SensitiveField String phone);
+    /**
+     * 更新电话名
+     * @param id
+     * @param name
+     * @param phone
+     */
+    void updateById(Long id,
+                    String name,
+                    @Param("phoneParam")
+                    @SensitiveField(paramName = "phoneParam")
+                    String phone);
 
 }

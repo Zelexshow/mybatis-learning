@@ -6,10 +6,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 标在实体类的字段上，表示要加解密操作的字段
+ * 标在实体类的字段上 OR Mapper请求参数上
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 public @interface SensitiveField {
-    String value() default "";
+    /**
+     * 参数名称，适用于放在mapper入参上，且入参上有@Param注解时
+     * 值应该和@Param的值保持一致
+     * @return
+     */
+    String paramName() default "";
 }
+
+

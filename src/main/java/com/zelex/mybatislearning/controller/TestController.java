@@ -15,27 +15,6 @@ public class TestController {
     @Resource
     private UserInfoDOMapper userInfoDOMapper;
 
-    @GetMapping("/insert")
-    public String insertUserDO(@RequestParam("name") String name, @RequestParam("phone") String phone) {
-        UserInfoDO userInfoDO = new UserInfoDO();
-        userInfoDO.setName(name);
-        userInfoDO.setPhone(phone);
-        userInfoDO.setIdNumber("22223333333");
-        userInfoDO.setIsDelete(false);
-        Date now = new Date();
-        userInfoDO.setGmtCreateTime(now);
-        userInfoDO.setGmtModTime(now);
-        userInfoDOMapper.insert(userInfoDO);
-        return "成功";
-    }
-
-    @GetMapping("/update")
-    public String updateById(@RequestParam("id") Long id, @RequestParam("name") String name) {
-        String phone = "11111111111";
-        userInfoDOMapper.updateById(id, name, phone);
-        return "成功";
-    }
-
     @GetMapping("/insertWithTypeHandler")
     public String insertWithTypeHandler(@RequestParam("name") String name, @RequestParam("phone") String phone) {
         UserInfoDO userInfoDO = new UserInfoDO();
@@ -56,6 +35,27 @@ public class TestController {
         return userInfoDO;
     }
 
+
+    @GetMapping("/insert")
+    public String insertUserDO(@RequestParam("name") String name, @RequestParam("phone") String phone) {
+        UserInfoDO userInfoDO = new UserInfoDO();
+        userInfoDO.setName(name);
+        userInfoDO.setPhone(phone);
+        userInfoDO.setIdNumber("22223333333");
+        userInfoDO.setIsDelete(false);
+        Date now = new Date();
+        userInfoDO.setGmtCreateTime(now);
+        userInfoDO.setGmtModTime(now);
+        userInfoDOMapper.insert(userInfoDO);
+        return "成功";
+    }
+
+    @GetMapping("/update")
+    public String updateById(@RequestParam("id") Long id, @RequestParam("name") String name) {
+        String phone = "11111111111";
+        userInfoDOMapper.updateById(id, name, phone);
+        return "成功";
+    }
 
     @GetMapping("/get")
     public UserInfoDO getById(@RequestParam("id") Long id) {

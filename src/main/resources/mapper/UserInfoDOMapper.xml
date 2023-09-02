@@ -27,12 +27,7 @@
         id, name, phone, id_number, is_delete, gmt_create_time, gmt_mod_time from t_user_info
     </sql>
 
-    <update id="updateById">
-        update t_user_info
-        set
-        name = #{name}, phone = #{phone}
-        where id = #{id}
-    </update>
+
 
     <select id="selectByIdWithDec" resultMap="userInfoWithDec">
         select <include refid="allFields"/>
@@ -58,9 +53,15 @@
         )
     </insert>
 
-
     <select id="selectById" resultMap="userInfo">
         select <include refid="allFields"/>
         where id = #{id}
     </select>
+
+    <update id="updateById">
+        update t_user_info
+        set
+        name = #{name}, phone = #{phoneParam}
+        where id = #{id}
+    </update>
 </mapper>
